@@ -1,0 +1,266 @@
+:root {
+  --bg: #0f0f14;
+  --panel: #1a1a22;
+  --line: #2a2a36;
+  --text: #e8e8ef;
+  --muted: #8a8a9a;
+  --accent: #ff5d5d;
+  --beat: #5db0ff;
+  --sub: #6ee7a8;
+  --play: #6ee7a8;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  touch-action: manipulation;
+}
+
+.app {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 28px 18px calc(28px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+header {
+  text-align: center;
+}
+header h1 {
+  margin: 0;
+  font-size: 1.7rem;
+  letter-spacing: -0.02em;
+}
+header .sub {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* 마디 박 표시 */
+.measure-dots {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+.beat-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--line);
+  transition: transform 0.05s, background 0.05s;
+}
+.beat-dot.accent {
+  outline: 2px solid #3a3a48;
+  outline-offset: 2px;
+}
+.beat-dot.on {
+  background: var(--beat);
+  transform: scale(1.35);
+}
+.beat-dot.accent.on {
+  background: var(--accent);
+}
+
+/* 보드 (가로=타이밍, 세로=볼륨) */
+.track {
+  position: relative;
+  height: 220px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  touch-action: none;
+}
+.grid-line {
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: repeating-linear-gradient(
+    to bottom,
+    #4a4a5e 0,
+    #4a4a5e 5px,
+    transparent 5px,
+    transparent 10px
+  );
+  transform: translateX(-1px);
+}
+.playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--play);
+  box-shadow: 0 0 8px var(--play);
+  transform: translateX(-1px);
+  pointer-events: none;
+}
+
+.handle {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transform: translate(-50%, -50%);
+  cursor: grab;
+  touch-action: none;
+  padding: 10px; /* 터치 영역 확대 */
+}
+.handle:active {
+  cursor: grabbing;
+}
+.handle.locked {
+  cursor: ns-resize;
+}
+.handle-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--sub);
+  border: 2px solid #0f0f14;
+  transition: box-shadow 0.05s;
+}
+.handle.locked .handle-dot {
+  background: var(--accent);
+}
+.handle.active .handle-dot {
+  box-shadow: 0 0 14px currentColor;
+}
+.handle-label {
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.handle.locked .handle-label {
+  color: var(--accent);
+  font-size: 0.9rem;
+}
+
+/* 컨트롤 */
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  align-items: center;
+}
+
+/* 템포 노브 */
+.knob-row {
+  display: flex;
+  justify-content: center;
+}
+.knob {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, #2a2a36, #15151c);
+  border: 2px solid var(--line);
+  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.4);
+  cursor: ns-resize;
+  touch-action: none;
+  position: relative;
+}
+.knob-dial {
+  position: absolute;
+  inset: 0;
+}
+.knob-indicator {
+  position: absolute;
+  left: 50%;
+  top: 10px;
+  width: 4px;
+  height: 28px;
+  border-radius: 2px;
+  background: var(--beat);
+  transform: translateX(-50%);
+  box-shadow: 0 0 8px var(--beat);
+}
+
+.stepper-row {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+.stepper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+.lbl {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.stepper-ctrl {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 6px;
+}
+.stepper-ctrl button {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  border: none;
+  background: #262633;
+  color: var(--text);
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+.stepper-ctrl button:active {
+  background: #33334a;
+}
+.stepper-ctrl .num {
+  font-size: 1.4rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.btn-row {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+.btn-row button {
+  height: 58px;
+  border-radius: 14px;
+  border: none;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn-row .play {
+  flex: 1;
+  background: var(--play);
+  color: #0a1f14;
+}
+.btn-row .play.on {
+  background: var(--accent);
+  color: #2a0a0a;
+}
+.btn-row .reset {
+  flex: 0 0 96px;
+  background: #262633;
+  color: var(--text);
+}
